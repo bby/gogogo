@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>untitled</title>
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="Tom Burton">
+	<!-- Date: 2011-08-04 -->
+	<style>
+		body {font-family: arial;}
+		#game_area {width: 200px; height: 200px;}
+		#hud {width: 100%; height: 40px;}
+		
+		#hud input {float: left;}
+		
+		#p1_bar, #p2_bar {
+			position: relative;
+			top: 10px;
+			float:left;
+			color: red;
+			height: 100px;
+			width: 10px;
+		}
+		#p2_bar { 
+			float:right;
+			color: green;
+		}
+		
+		#p1_speed, #p2_speed, #start {
+			width: 20px;
+			height: 20px;
+			background-color: #ccc;
+			color: #fff;
+			float: left;
+			margin-right: 10px;
+			text-align: center;
+			vertical-align: middle;
+		}
+		
+		#start {width: auto; padding: 0 5px;}
+		
+		#p1_speed.selected {
+			border-bottom: 5px solid red;
+		}
+		
+		#p2_speed.selected {
+			border-bottom: 5px solid green;
+		}
+		
+		#messages {
+			float: left;
+			border-left: 1px solid black;
+			padding-left: 10px;
+			margin-left: 10px;
+		}
+	</style>
+	<script language="javascript">
+	var lib = {
+		getStyle: function(el,styleProp)
+		{
+			var x = document.getElementById(el);
+			if (x.currentStyle)
+				var y = x.currentStyle[styleProp];
+			else if (window.getComputedStyle)
+				var y = document.defaultView.getComputedStyle(x,null).getPropertyValue(styleProp);
+			return y;
+		}
+	}
+	
+	var speech_control = {
+		init: function() {
+			this.movement_timer = setInterval("speech_control.move()",500);
+			this.current_player = 1;
+			this.p1_deduction = 0;
+			this.p2_deduction = 0;
+			this.p1_speed = 5;
+			this.p2_speed = 5;
+			this.values = [];
+			///
+			this.p1_speedo = document.getElementById("p1_speed");
+			this.p2_speedo = document.getElementById("p2_speed");
+			///
+			this.p1_speedo.innerHTML = this.p1_speed;
+			this.p1_speedo.setAttribute("class", 'selected');
+			this.p2_speedo.innerHTML = this.p2_speed;
+		},
+		calculate_speed: function(value) {
+			this.by_the_rules(value);
+			///
+			if(this.current_player == 1) {
+				this.p1_speed += value.match(/[aeiou]/ig).length - this.p1_deduction;
+				this.p1_speedo.innerHTML = this.p1_speed - this.p1_deduction;
+				this.current_player = 2;
+				this.p2_speedo.setAttribute("class", 'selected');
+				this.p1_speedo.removeAttribute("class", 'selected');
+			} else if(this.current_player == 2) {
+				this.p2_speed += value.match(/[aeiou]/ig).length - this.p2_deduction;
+				this.p2_speedo.innerHTML = this.p2_speed - this.p2_deduction;
+				this.current_player = 1;
+				this.p1_speedo.setAttribute("class", 'selected');
+				this.p2_speedo.removeAttribute("class", 'selected');
+			}
+		},
+		move: function() {
+			document.getElementById("p1_bar").style.top = parseInt(lib.getStyle("p1_bar","top")) + this.p1_speed +"px";
+			document.getElementById("p2_bar").style.top = parseInt(lib.getStyle("p2_bar","top")) + this.p2_speed +"px";
+		},
+		by_the_rules: function(value) {
+			document.getElementById("messages").innerHTML = "";
+			for(i=0;i<this.values.length;i++) {
+				if(this.values[i]==value && this.current_player == 1) {
+					this.p1_deduction = 5;
+					document.getElementById("messages").innerHTML = "Player 1 we have had that word before, deduction applied.";
+				} else if(this.values[i]==value && this.current_player == 2) {
+					this.p2_deduction = 5;
+					document.getElementById("messages").innerHTML = "Player 2 we have had that word before, deduction applied.";
+				}
+			}
+			this.values.push(value);
+		}
+	}
+	</script>
+</head>
+<body>
+<div id="hud">
+	<div id="p1_speed">0</div>
+	<div id="p2_speed">0</div>
+	<span id="start" onclick="speech_control.init();">Start</span>
+	<input type="text" x-webkit-speech="x-webkit-speech" onwebkitspeechchange="speech_control.calculate_speed(this.value);" />
+	<div id="messages"></div>
+</div>
+
+<div id="game_area">
+	<div id="p1_bar">&Ocirc;</div>
+	<div id="p2_bar">&Oslash;</div>
+</div>
+
+</body>
+</html>
