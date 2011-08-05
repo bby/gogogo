@@ -11,13 +11,13 @@
 	<style>
 		body {font-family: arial;}
 		#game_area {width: 200px; height: 200px;}
-		#hud {width: 100%; height: 40px;}
+		#hud {width: 100%; height: 40px; position:fixed; z-index:100;}
 		
 		#hud input {float: left;}
 		
 		#p1_bar, #p2_bar {
 			position: relative;
-			top: 10px;
+			top: 30px;
 			float:left;
 			color: red;
 			height: 100px;
@@ -55,6 +55,13 @@
 			padding-left: 10px;
 			margin-left: 10px;
 		}
+		
+		#finish_line {
+			position: absolute;
+			visibility: hidden;
+			border-top: 1px dotted black;
+			width: 200px;
+		}
 	</style>
 	<script language="javascript">
 	var lib = {
@@ -71,12 +78,16 @@
 	
 	var speech_control = {
 		init: function() {
-			this.movement_timer = setInterval("speech_control.move()",500);
+			this.movement_timer = setInterval("speech_control.move()",100);
+			///
+			this.finish_line_pos = 500;
+			this.finish_line = document.getElementById("finish_line");
+			///
 			this.current_player = 1;
 			this.p1_deduction = 0;
 			this.p2_deduction = 0;
-			this.p1_speed = 5;
-			this.p2_speed = 5;
+			this.p1_speed = 10;
+			this.p2_speed = 10;
 			this.values = [];
 			///
 			this.p1_speedo = document.getElementById("p1_speed");
@@ -104,8 +115,25 @@
 			}
 		},
 		move: function() {
+			if(parseInt(lib.getStyle("p1_bar","top")) >= this.finish_line_pos - 100 || parseInt(lib.getStyle("p1_bar","top")) >= this.finish_line_pos - 10){
+				this.finish_line.style.top = this.finish_line_pos+"px";
+				this.finish_line.style.visibility = "visible";
+			}
+			
+			if(parseInt(lib.getStyle("p1_bar","top")) >= this.finish_line_pos) {
+				alert("player 1 wins!");
+				clearInterval(this.movement_timer);
+			}
+			
+			if(parseInt(lib.getStyle("p2_bar","top")) >= this.finish_line_pos) {
+				alert("player 2 wins!");
+				clearInterval(this.movement_timer);
+			}
+
 			document.getElementById("p1_bar").style.top = parseInt(lib.getStyle("p1_bar","top")) + this.p1_speed +"px";
 			document.getElementById("p2_bar").style.top = parseInt(lib.getStyle("p2_bar","top")) + this.p2_speed +"px";
+			window.scrollBy(0,200);
+			
 		},
 		by_the_rules: function(value) {
 			document.getElementById("messages").innerHTML = "";
@@ -124,6 +152,7 @@
 	</script>
 </head>
 <body>
+<div id="trace-output"></div>
 <div id="hud">
 	<div id="p1_speed">0</div>
 	<div id="p2_speed">0</div>
@@ -135,6 +164,7 @@
 <div id="game_area">
 	<div id="p1_bar">&Ocirc;</div>
 	<div id="p2_bar">&Oslash;</div>
+	<div id="finish_line">finish</div>
 </div>
 
 </body>
