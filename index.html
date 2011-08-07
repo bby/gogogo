@@ -62,6 +62,9 @@
 			border-top: 1px dotted black;
 			width: 200px;
 		}
+		
+		#game_area,#instructions { float: left; }
+		#instructions {margin-left: 100px;}
 	</style>
 	<script language="javascript">
 		/* 
@@ -199,6 +202,8 @@
 	
 	var speech_control = {
 		init: function() {
+		
+			///
 			this.boost_period = 2000;
 			this.count_down_from = 4;
 			this.count_down_timer = setInterval("speech_control.count_down()",1000);
@@ -334,6 +339,13 @@
 	<div id="p1_bar">&Ocirc;</div>
 	<div id="p2_bar">&Oslash;</div>
 	<div id="finish_line">finish</div>
+</div>
+
+<div id="instructions">
+<h2>Instructions</h2>
+<p>Click the start button to begin.</p> 
+<p>Once the count down is complete player 1 click the microphone wait for the cue and then say a word.</p>
+<p>The more vowels in the word the larger your boost.</p>	
 </div>
 
 </body>
