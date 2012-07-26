@@ -12,7 +12,10 @@
 		#game_area {width: 200px; height: 200px;}
 		#hud {width: 100%; height: 40px; position:fixed; z-index:100;}
 		
-		#hud input {float: left;}
+		#hud input {
+			float: left; 
+			position:relative; 
+			top:-2px;}
 		
 		#p1_bar, #p2_bar {
 			position: relative;
@@ -27,7 +30,7 @@
 			color: green;
 		}
 		
-		#p1_speed, #p2_speed, #start {
+		#p1_speed, #p2_speed, #start, #info {
 			width: 20px;
 			height: 20px;
 			background-color: #ccc;
@@ -38,9 +41,20 @@
 			vertical-align: middle;
 		}
 		
+		#info:hover > #instructions {
+			display: block;
+		}
+
 		#start {width: auto; padding: 0 5px;}
-		#count_down {float:left;font-size: 2em;color: red;}
-		
+		#count_down {
+			float:left;
+			font-size: 18px;
+			color: red;
+			margin-left: 10px;
+			padding: 0 10px;
+			font-weight: bold;
+		}
+		#info {color: green;}
 		#p1_speed.selected {
 			border-bottom: 5px solid red;
 		}
@@ -63,8 +77,15 @@
 			width: 200px;
 		}
 		
-		#game_area,#instructions { float: left; }
-		#instructions {margin-left: 100px;}
+		#game_area, #instructions { float: left; }
+		#instructions {
+			width: 250px;
+			background: #ccc;
+			color: black;
+			padding: 20px;
+			display: none;
+			text-align: left;
+		}
 	</style>
 	<script language="javascript">
 		/* 
@@ -327,6 +348,15 @@
 <body>
 <div id="trace-output"></div>
 <div id="hud">
+	<span id="info"><strong>?</strong>
+		<div id="instructions">
+			<h2>Instructions</h2>
+			<p>Click the start button to begin.</p> 
+			<p>Once the count down is complete player 1 click the microphone in the input box and then say a word.</p>
+			<p>Once player 1 has said their word player 2 do the same</p>
+			<p>The more vowels in the word the larger your boost.</p>	
+		</div>
+	</span>
 	<div id="p1_speed">0</div>
 	<div id="p2_speed">0</div>
 	<span id="start">Start</span>
@@ -339,13 +369,6 @@
 	<div id="p1_bar">&Ocirc;</div>
 	<div id="p2_bar">&Oslash;</div>
 	<div id="finish_line">finish</div>
-</div>
-
-<div id="instructions">
-<h2>Instructions</h2>
-<p>Click the start button to begin.</p> 
-<p>Once the count down is complete player 1 click the microphone wait for the cue and then say a word.</p>
-<p>The more vowels in the word the larger your boost.</p>	
 </div>
 
 </body>
